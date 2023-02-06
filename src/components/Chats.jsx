@@ -1,38 +1,48 @@
-import React from 'react'
+import { useEffect, useState, useContext } from "react";
+import { db } from "../config/firebase";
+import { onSnapshot, doc } from "firebase/firestore";
+import { AuthContext } from "../context/AuthContext";
+import { ChatContext } from "../context/ChatContext";
 
 const Chats = () => {
-  return (
-    <div className='chats'>
-      <div className="userChat">
-        <img src="https://images.unsplash.com/photo-1675332911384-b55fc27f54ab?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=776&q=80" alt="john" />
-        <div className="userChatInfo">
-          <span>Jane</span>
-          <p>Hello</p>
-        </div>
-      </div>
-      <div className="userChat">
-        <img src="https://images.unsplash.com/photo-1675175471354-8cd06a342562?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80" alt="robert" />
-        <div className="userChatInfo">
-          <span>Robert</span>
-          <p>Bruh</p>
-        </div>
-      </div>
-      <div className="userChat">
-        <img src="https://images.unsplash.com/photo-1641392740168-2f3a73b3e514?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80" alt="cathy" />
-        <div className="userChatInfo">
-          <span>Cathy</span>
-          <p>Hey</p>
-        </div>
-      </div>
-      <div className="userChat">
-        <img src="https://images.unsplash.com/photo-1670693372126-74a275d7d086?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1740&q=80" alt="jackson" />
-        <div className="userChatInfo">
-          <span>Jackson</span>
-          <p>no way!!</p>
-        </div>
-      </div>
-    </div>
-  )
-}
+  const [chats, setChats] = useState([]);
+  const { currentUser } = useContext(AuthContext);
+  const { dispatch } = useContext(ChatContext);
 
-export default Chats
+  useEffect(() => {
+    const getChats = () => {
+      const unsub = onSnapshot(doc(db, "userChats", currentUser.uid), (doc) => {
+        setChats(doc.data());
+      });
+
+      return () => {
+        unsub();
+      };
+    };
+
+    currentUser.uid && getChats();
+  }, [currentUser.uid]);
+
+  const handleSelect = (user) => {
+    dispatch({type: "CHANGE_USER", payload: user})
+  };
+
+  return (
+    <div className="chats">
+      {Object.entries(chats)?.map((chat) => (
+        <div className="userChat" key={chat[0]} onClick={handleSelect(chat[1].userInfo)}>
+          <img
+            src={chat[1].userInfo.photoURL}
+            alt="john"
+          />
+          <div className="userChatInfo">
+            <span>{chat[1].userInfo.displayName}</span>
+            <p>{chat[1].lastMessage?.text}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+export default Chats;

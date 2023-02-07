@@ -4,7 +4,12 @@ import Attach from "../assets/attach.png";
 import { useContext, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { ChatContext } from "../context/ChatContext";
-import { arrayUnion, doc, serverTimestamp, updateDoc } from "firebase/firestore";
+import {
+  arrayUnion,
+  doc,
+  serverTimestamp,
+  updateDoc,
+} from "firebase/firestore";
 import { db } from "../config/firebase";
 import { v4 as uuid } from "uuid";
 import { Timestamp } from "firebase/firestore";
@@ -68,10 +73,14 @@ const Input = () => {
       [data.chatId + ".date"]: serverTimestamp(),
     });
 
-
-
     setText("");
     setImg(null);
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      handleSend();
+    }
   };
 
   return (
@@ -81,6 +90,7 @@ const Input = () => {
         placeholder="type something..."
         value={text}
         onChange={(e) => setText(e.target.value)}
+        onKeyDown={(e) => handleKeyPress(e)}
       />
       <div className="send">
         <img src={Attach} alt="" />

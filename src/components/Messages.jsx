@@ -20,11 +20,16 @@ const Messages = () => {
   }, [data.chatId]);
 
   return (
+    data.chatId !== "null" ? (
     <div className="messages">
       {messages.map(message => (
         <Message key={message.id} message={message} />
       ))}
-    </div>
+    </div>) : (
+      <div className="noMessages">
+        <h1>Selecciona un chat</h1>
+      </div>
+    )
   );
 };
 

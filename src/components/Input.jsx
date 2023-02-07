@@ -91,19 +91,25 @@ const Input = () => {
         value={text}
         onChange={(e) => setText(e.target.value)}
         onKeyDown={(e) => handleKeyPress(e)}
+        disabled={data.chatId !== "null" ? false : true}
       />
       <div className="send">
-        <img src={Attach} alt="" />
         <input
           type="file"
           style={{ display: "none" }}
           id="file"
           onChange={(e) => setImg(e.target.files[0])}
+          disabled={data.chatId !== "null" ? false : true}
         />
         <label htmlFor="file">
-          <img src={Img} alt="" />
+          <img src={Img} alt="" className={data.chatId === "null" ? "disabledIcon" : ""} />
         </label>
-        <button onClick={handleSend}>Send</button>
+        <button
+          onClick={data.chatId !== "null" ? handleSend : null}
+          className={data.chatId === "null" ? "disabledButton" : ""}
+        >
+          Send
+        </button>
       </div>
     </div>
   );

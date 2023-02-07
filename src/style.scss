@@ -235,6 +235,22 @@ $black: #2f2f2f;
         }
       }
 
+      .noMessages {
+        height: calc(100% - 160px);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: $extra-light-blue;
+        padding: 10px;
+
+        h1 {
+          font-size: 18px;
+          color: $purple;
+          font-weight: 500;
+          text-align: center;
+        }
+      }
+
       .messages {
         background-color: $extra-light-blue;
         padding: 10px;
@@ -313,6 +329,12 @@ $black: #2f2f2f;
           &::placeholder {
             color: lightgray;
           }
+
+          &[disabled] {
+            color: lightgray;
+            cursor: not-allowed;
+            background-color: $white;
+          }
         }
 
         .send {
@@ -339,6 +361,19 @@ $black: #2f2f2f;
               background-color: $blue;
             }
 
+          }
+
+          .disabledButton {
+            background-color: lightgray;
+            cursor: not-allowed;
+
+            &:hover {
+              background-color: lightgray;
+            }
+          }
+
+          .disabledIcon {
+            cursor: not-allowed;
           }
         }
       }
